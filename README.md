@@ -23,6 +23,11 @@ VALUES datetime.days_before(datetime.next_month_end('2024-11-28'), 5);
 Module DATETIME provides the following functions for calculating future dates for various criteria:
 
 * NEXT_DAY_N_OF_MONTH
+* NEXT_1ST_DOW_N
+* NEXT_2ND_DOW_N
+* NEXT_3RD_DOW_N
+* NEXT_4TH_DOW_N
+* NEXT_LAST_DOW_N
 * NEXT_1ST_DOW_N_OF_MONTH
 * NEXT_2ND_DOW_N_OF_MONTH
 * NEXT_3RD_DOW_N_OF_MONTH
@@ -89,7 +94,7 @@ If any supplied parameter contains a NULL, the result will be null.
 
 ### Function NEXT_DAY_N_OF_MONTH
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that matches the specified day (P_DAY_N) and month (P_MONTH). Parameter P_DAY_N is a SMALLINT value between 1 and 31; the exact maximum depends on the month in accordance with normal date rules.
+This function returns the first date on or after the specified date (P_AT_DATE) that matches the specified day (P_DAY_N) and month (P_MONTH). Parameter P_DAY_N is a SMALLINT value between 1 and 31; the exact maximum depends on the month in accordance with normal date rules.
 
 Examples:
 ```
@@ -104,18 +109,78 @@ VALUES datetime.next_day_n_of_month('2024-03-01', 29, 2);
 29-02-2028
 ```
 
-### Function NEXT_1ST_DOW_N_OF_MONTH
+### Function NEXT_1ST_DOW_N
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that is the first occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
+This function returns the first date on or after the specified date (P_AT_DATE) that is the first occurence in its month of the specified day of week (P_DOW_N).
 
 Examples:
 ```
--- Return the earlist date on or after 2024-11-05 that is the first Monday in November.
+-- Return the first date on or after 2024-11-05 that is the first Monday in a month.
+VALUES datetime.next_1st_dow_n('2024-11-05', 1);
+
+02-12-2024
+```
+
+### Function NEXT_2ND_DOW_N
+
+This function returns the first date on or after the specified date (P_AT_DATE) that is the second occurence in its month of the specified day of week (P_DOW_N).
+
+Examples:
+```
+-- Return the first date on or after 2024-11-05 that is the second Monday in a month.
+VALUES datetime.next_2nd_dow_n('2024-11-05', 1);
+
+11-11-2024
+```
+
+### Function NEXT_3RD_DOW_N
+
+This function returns the first date on or after the specified date (P_AT_DATE) that is the third occurence in its month of the specified day of week (P_DOW_N).
+
+Examples:
+```
+-- Return the first date on or after 2024-11-05 that is the third Sunday in a month.
+VALUES datetime.next_3rd_dow_n('2024-11-05', 7);
+
+17-11-2024
+```
+
+### Function NEXT_4TH_DOW_N
+
+This function returns the first date on or after the specified date (P_AT_DATE) that is the fourth occurence in its month of the specified day of week (P_DOW_N).
+
+Examples:
+```
+-- Return the first date on or after 2024-11-05 that is the fourth Tuesday in a month.
+VALUES datetime.next_4th_dow_n('2024-11-05', 2);
+
+26-11-2024
+```
+
+### Function NEXT_LAST_DOW_N
+
+This function returns the first date on or after the specified date (P_AT_DATE) that is the last occurence in its month of the specified day of week (P_DOW_N).
+
+Examples:
+```
+-- Return the first date on or after 2024-11-05 that is the last Monday in a month.
+VALUES datetime.next_last_dow_n('2024-11-05', 1);
+
+25-11-2024
+```
+
+### Function NEXT_1ST_DOW_N_OF_MONTH
+
+This function returns the first date on or after the specified date (P_AT_DATE) that is the first occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
+
+Examples:
+```
+-- Return the first date on or after 2024-11-05 that is the first Monday in November.
 VALUES datetime.next_1st_dow_n_of_month('2024-11-05', 1, 11);
 
 03-11-2025
 
--- Return the earlist date on or after 2024-11-05 that is the first Thursday in November.
+-- Return the first date on or after 2024-11-05 that is the first Thursday in November.
 VALUES datetime.next_1st_dow_n_of_month('2024-11-05', 4, 11);
 
 07-11-2024
@@ -123,16 +188,16 @@ VALUES datetime.next_1st_dow_n_of_month('2024-11-05', 4, 11);
 
 ### Function NEXT_2ND_DOW_N_OF_MONTH
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that is the second occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
+This function returns the first date on or after the specified date (P_AT_DATE) that is the second occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
 
 Examples:
 ```
--- Return the earlist date on or after 2024-11-12 that is the second Tuesday in November.
+-- Return the first date on or after 2024-11-12 that is the second Tuesday in November.
 VALUES datetime.next_2nd_dow_n_of_month('2024-11-12', 2, 11);
 
 12-11-2024
 
--- Return the earlist date on or after 2024-11-12 that is the second Friday in November.
+-- Return the first date on or after 2024-11-12 that is the second Friday in November.
 VALUES datetime.next_2nd_dow_n_of_month('2024-11-12', 5, 11);
 
 14-11-2025
@@ -140,16 +205,16 @@ VALUES datetime.next_2nd_dow_n_of_month('2024-11-12', 5, 11);
 
 ### Function NEXT_3RD_DOW_N_OF_MONTH
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that is the third occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
+This function returns the first date on or after the specified date (P_AT_DATE) that is the third occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
 
 Examples:
 ```
--- Return the earlist date on or after 2024-11-16 that is the third Sunday in November.
+-- Return the first date on or after 2024-11-16 that is the third Sunday in November.
 VALUES datetime.next_3rd_dow_n_of_month('2024-11-16', 7, 11);
 
 17-11-2024
 
--- Return the earlist date on or after 2024-11-16 that is the third Friday in November.
+-- Return the first date on or after 2024-11-16 that is the third Friday in November.
 VALUES datetime.next_3rd_dow_n_of_month('2024-11-16', 5, 11);
 
 21-11-2025
@@ -157,16 +222,16 @@ VALUES datetime.next_3rd_dow_n_of_month('2024-11-16', 5, 11);
 
 ### Function NEXT_4TH_DOW_N_OF_MONTH
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that is the fourth occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
+This function returns the first date on or after the specified date (P_AT_DATE) that is the fourth occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
 
 Examples:
 ```
--- Return the earlist date on or after 2024-11-16 that is the fourth Sunday in November.
+-- Return the first date on or after 2024-11-16 that is the fourth Sunday in November.
 VALUES datetime.next_4th_dow_n_of_month('2024-11-16', 7, 11);
 
 24-11-2024
 
--- Return the earlist date on or after 2024-11-16 that is the fourth Friday in November.
+-- Return the first date on or after 2024-11-16 that is the fourth Friday in November.
 VALUES datetime.next_4th_dow_n_of_month('2024-11-16', 5, 11);
 
 22-11-2024
@@ -174,16 +239,16 @@ VALUES datetime.next_4th_dow_n_of_month('2024-11-16', 5, 11);
 
 ### Function NEXT_LAST_DOW_N_OF_MONTH
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that is the last occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
+This function returns the first date on or after the specified date (P_AT_DATE) that is the last occurrence of the specified day of the week (P_DOW_N) in the specified month (P_MONTH).
 
 Examples:
 ```
--- Return the earlist date on or after 2024-11-16 that is the last Sunday in November.
+-- Return the first date on or after 2024-11-16 that is the last Sunday in November.
 VALUES datetime.next_last_dow_n_of_month('2024-11-16', 7, 11);
 
 24-11-2024
 
--- Return the earlist date on or after 2024-11-16 that is the last Friday in November.
+-- Return the first date on or after 2024-11-16 that is the last Friday in November.
 VALUES datetime.next_last_dow_n_of_month('2024-11-16', 5, 11);
 
 29-11-2024
@@ -191,16 +256,16 @@ VALUES datetime.next_last_dow_n_of_month('2024-11-16', 5, 11);
 
 ### Function NEXT_EVERY_N_DAYS
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_DAYS) from the specified base date (P_BASE_DATE). Parameter P_N_DAYS is a SMALLINT value between 1 and 366.
+This function returns the first date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_DAYS) from the specified base date (P_BASE_DATE). Parameter P_N_DAYS is a SMALLINT value between 1 and 366.
 
 Examples:
 ```
--- Return the earliest date on or after 2024-11-16 that is a multiple of 7 days from 2024-11-01.
+-- Return the first date on or after 2024-11-16 that is a multiple of 7 days from 2024-11-01.
 VALUES datetime.next_every_n_days('2024-11-16', '2024-11-01', 7);
 
 22-11-2024
 
--- Return the earliest date on or after 2024-11-01 that is a multiple of 5 days from 2024-11-16.
+-- Return the first date on or after 2024-11-01 that is a multiple of 5 days from 2024-11-16.
 VALUES datetime.next_every_n_days('2024-11-01', '2024-11-16', 5);
 
 16-11-2024
@@ -208,16 +273,16 @@ VALUES datetime.next_every_n_days('2024-11-01', '2024-11-16', 5);
 
 ### Function NEXT_EVERY_N_WEEKS
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_WEEKS) from the specified base date (P_BASE_DATE). Parameter P_N_WEEKS is a SMALLINT value between 1 and 52.
+This function returns the first date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_WEEKS) from the specified base date (P_BASE_DATE). Parameter P_N_WEEKS is a SMALLINT value between 1 and 52.
 
 Examples:
 ```
--- Return the earliest date on or after 2024-11-15 that is a multiple of 2 weeks from 2024-11-01.
+-- Return the first date on or after 2024-11-15 that is a multiple of 2 weeks from 2024-11-01.
 VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 2);
 
 15-11-2024
 
--- Return the earliest date on or after 2024-11-01 that is a multiple of 3 weeks from 2024-11-01.
+-- Return the first date on or after 2024-11-01 that is a multiple of 3 weeks from 2024-11-01.
 VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 3);
 
 22-11-2024
@@ -225,16 +290,16 @@ VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 3);
 
 ### Function NEXT_EVERY_N_MONTHS
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) with the specified months interval (P_N_MONTHS) from the specified base date (P_BASE_DATE). Parameter P_N_MONTHS is a SMALLINT value between 1 and 120.
+This function returns the first date on or after the specified date (P_AT_DATE) with the specified months interval (P_N_MONTHS) from the specified base date (P_BASE_DATE). Parameter P_N_MONTHS is a SMALLINT value between 1 and 120.
 
 Examples:
 ```
--- Return the earliest date on or after 2024-11-15 that is a multiple of 2 months from 2024-10-31.
+-- Return the first date on or after 2024-11-15 that is a multiple of 2 months from 2024-10-31.
 VALUES datetime.next_every_n_months('2024-11-15', '2024-10-31', 2);
 
 31-12-2024
 
--- Return the earliest date on or after 2024-11-15 that is a multiple of 4 months from 2024-10-31.
+-- Return the first date on or after 2024-11-15 that is a multiple of 4 months from 2024-10-31.
 VALUES datetime.next_every_n_months('2024-11-15', '2024-10-31', 4);
 
 28-02-2025
@@ -266,16 +331,16 @@ VALUES datetime.next_last_day_of_month('2024-11-01', 6);
 
 ### Function NEXT_LEAP_DATE
 
-This function returns the earliest date on or after the specified date (P_AT_DATE) that is 29th February.
+This function returns the first date on or after the specified date (P_AT_DATE) that is 29th February.
 
 Examples:
 ```
--- Return the earliest date on or after 2024-01-01 that is a leap date.
+-- Return the first date on or after 2024-01-01 that is a leap date.
 VALUES datetime.next_leap_date('2024-01-01');
 
 29-02-2024
 
--- Return the earliest date on or after 2096-03-01 that is a leap date.
+-- Return the first date on or after 2096-03-01 that is a leap date.
 VALUES datetime.next_leap_date('2096-03-01');
 
 29-02-2104
