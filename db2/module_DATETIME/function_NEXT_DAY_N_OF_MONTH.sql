@@ -11,30 +11,30 @@ BEGIN
   DECLARE CONTINUE HANDLER FOR SQLSTATE '22008'
     SIGNAL SQLSTATE 'TZ001' SET MESSAGE_TEXT = 'P_AT_DATE is beyond calculation range';
 
+  -- Check for leap date input (function NEXT_LEAP_DATE should be used).
+  IF p_day_n = 29 AND p_month = 2 THEN
+    SIGNAL SQLSTATE 'TZ002' SET MESSAGE_TEXT = 'Illegal P_DAY_N and P_MONTH input';
+  END IF;
+
   -- Handle NULL input, returning NULL.
   IF p_at_date IS NULL OR p_day_n IS NULL OR p_month IS NULL THEN
     RETURN NULL;
   END IF;
 
-  -- If the specified day and month requests a leap date then delegate; otherwise calculate the result.
-  IF (p_month, p_day_n) = (2, 29) THEN
-    RETURN next_leap_date(p_at_date);
-  ELSE
-    -- Calculate first day of the year of the supplied date.
-    SET v_year_start_date = c_day_1 + (YEAR(p_at_date) - 1) YEARS;
+  -- Calculate first day of the year of the supplied date.
+  SET v_year_start_date = c_day_1 + (YEAR(p_at_date) - 1) YEARS;
 
-    -- Add a year if the supplied date has a day and month after the specified day and month.
-    IF (MONTH(p_at_date), DAY(p_at_date)) > (p_month, p_day_n) THEN
-      SET v_year_start_date = v_year_start_date + 1 YEAR;
-    END IF;
+  -- Add a year if the supplied date has a day and month after the specified day and month.
+  IF (MONTH(p_at_date), DAY(p_at_date)) > (p_month, p_day_n) THEN
+    SET v_year_start_date = v_year_start_date + 1 YEAR;
+  END IF;
 
-    -- Calculate the potential result.
-    SET v_calculated_date = v_year_start_date + (p_month - 1) MONTHS + (p_day_n - 1) DAYS;
+  -- Calculate the potential result.
+  SET v_calculated_date = v_year_start_date + (p_month - 1) MONTHS + (p_day_n - 1) DAYS;
 
-    -- Check for an invalid result.
-    IF (MONTH(v_calculated_date), DAY(v_calculated_date)) != (p_month, p_day_n) THEN
-      SIGNAL SQLSTATE 'TZ002' SET MESSAGE_TEXT = 'Illegal P_DAY_N or P_MONTH inputs';
-    END IF;
+  -- Check for an invalid result.
+  IF (MONTH(v_calculated_date), DAY(v_calculated_date)) != (p_month, p_day_n) THEN
+    SIGNAL SQLSTATE 'TZ002' SET MESSAGE_TEXT = 'Illegal P_DAY_N or P_MONTH inputs';
   END IF;
 
   -- Return result.

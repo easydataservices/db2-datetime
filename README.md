@@ -22,22 +22,23 @@ VALUES datetime.days_before(datetime.next_month_end('2024-11-28'), 5);
 
 Module DATETIME provides the following functions for calculating future dates for various criteria:
 
-* NEXT_DAY_N_OF_MONTH
+* NEXT_EVERY_N_DAYS
+* NEXT_EVERY_N_WEEKS
+* NEXT_EVERY_N_MONTHS
+* NEXT_DAY_N
+* NEXT_LAST_DAY
 * NEXT_1ST_DOW_N
 * NEXT_2ND_DOW_N
 * NEXT_3RD_DOW_N
 * NEXT_4TH_DOW_N
 * NEXT_LAST_DOW_N
+* NEXT_DAY_N_OF_MONTH
+* NEXT_LAST_DAY_OF_MONTH
 * NEXT_1ST_DOW_N_OF_MONTH
 * NEXT_2ND_DOW_N_OF_MONTH
 * NEXT_3RD_DOW_N_OF_MONTH
 * NEXT_4TH_DOW_N_OF_MONTH
 * NEXT_LAST_DOW_N_OF_MONTH
-* NEXT_EVERY_N_DAYS
-* NEXT_EVERY_N_WEEKS
-* NEXT_EVERY_N_MONTHS
-* NEXT_MONTH_END
-* NEXT_LAST_DAY_OF_MONTH
 * NEXT_LEAP_DATE
 
 ### Common parameters
@@ -87,26 +88,88 @@ SQL0438N  Application raised error or warning with diagnostic text: "P_MONTH
 out of range".  SQLSTATE=TZ002
 ```
 
-
 ### NULL inputs
 
 If any supplied parameter contains a NULL, the result will be null.
 
-### Function NEXT_DAY_N_OF_MONTH
+### Function NEXT_EVERY_N_DAYS
 
-This function returns the first date on or after the specified date (P_AT_DATE) that matches the specified day (P_DAY_N) and month (P_MONTH). Parameter P_DAY_N is a SMALLINT value between 1 and 31; the exact maximum depends on the month in accordance with normal date rules.
+This function returns the first date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_DAYS) from the specified base date (P_BASE_DATE). Parameter P_N_DAYS is a SMALLINT value between 1 and 366.
 
 Examples:
 ```
--- Return the next 15th January after 2023-11-25.
-VALUES datetime.next_day_n_of_month('2023-11-25', 15, 1);
+-- Return the first date on or after 2024-11-16 that is a multiple of 7 days from 2024-11-01.
+VALUES datetime.next_every_n_days('2024-11-16', '2024-11-01', 7);
 
-15-01-2024
+22-11-2024
 
--- Return the next 29th February after 2024-03-01.
-VALUES datetime.next_day_n_of_month('2024-03-01', 29, 2);
+-- Return the first date on or after 2024-11-01 that is a multiple of 5 days from 2024-11-16.
+VALUES datetime.next_every_n_days('2024-11-01', '2024-11-16', 5);
 
-29-02-2028
+16-11-2024
+```
+
+### Function NEXT_EVERY_N_WEEKS
+
+This function returns the first date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_WEEKS) from the specified base date (P_BASE_DATE). Parameter P_N_WEEKS is a SMALLINT value between 1 and 52.
+
+Examples:
+```
+-- Return the first date on or after 2024-11-15 that is a multiple of 2 weeks from 2024-11-01.
+VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 2);
+
+15-11-2024
+
+-- Return the first date on or after 2024-11-01 that is a multiple of 3 weeks from 2024-11-01.
+VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 3);
+
+22-11-2024
+```
+
+### Function NEXT_EVERY_N_MONTHS
+
+This function returns the first date on or after the specified date (P_AT_DATE) with the specified months interval (P_N_MONTHS) from the specified base date (P_BASE_DATE). Parameter P_N_MONTHS is a SMALLINT value between 1 and 120.
+
+Examples:
+```
+-- Return the first date on or after 2024-11-15 that is a multiple of 2 months from 2024-10-31.
+VALUES datetime.next_every_n_months('2024-11-15', '2024-10-31', 2);
+
+31-12-2024
+
+-- Return the first date on or after 2024-11-15 that is a multiple of 4 months from 2024-10-31.
+VALUES datetime.next_every_n_months('2024-11-15', '2024-10-31', 4);
+
+28-02-2025
+```
+
+### Function NEXT_DAY_N
+
+This function returns the first date on or after the specified date (P_AT_DATE) that matches the specified day (P_DAY_N). Parameter P_DAY_N is a SMALLINT value between 1 and 31.
+
+Examples:
+```
+-- Return the next 29th after 2024-01-30.
+VALUES datetime.next_day_n('2024-01-30', 29);
+
+29-02-2024
+
+-- Return the next 29th after 2025-01-30.
+VALUES datetime.next_day_n('2025-01-30', 29);
+
+29-03-2025
+```
+
+### Function NEXT_LAST_DAY
+
+This function returns the next month end date on or after the specified date (P_AT_DATE).
+
+Examples:
+```
+-- Return the last day of the June after 2024-11-05.
+VALUES datetime.next_month_end('2024-11-05');
+
+30-11-2024
 ```
 
 ### Function NEXT_1ST_DOW_N
@@ -167,6 +230,35 @@ Examples:
 VALUES datetime.next_last_dow_n('2024-11-05', 1);
 
 25-11-2024
+```
+
+### Function NEXT_DAY_N_OF_MONTH
+
+This function returns the first date on or after the specified date (P_AT_DATE) that matches the specified day (P_DAY_N) and month (P_MONTH). Parameter P_DAY_N is a SMALLINT value between 1 and 31; the exact maximum depends on the month in accordance with normal date rules. A P_DAY_N value of 29 cannot be specified with a P_MONTH value of 2; use function NEXT_LEAP_DATE instead.
+
+Examples:
+```
+-- Return the next 15th January after 2023-11-25.
+VALUES datetime.next_day_n_of_month('2023-11-25', 15, 1);
+
+15-01-2024
+
+-- Return the next 28th February after 2024-03-01.
+VALUES datetime.next_day_n_of_month('2024-03-01', 28, 2);
+
+28-02-2025
+```
+
+### Function NEXT_LAST_DAY_OF_MONTH
+
+This function returns the date of the last day in the specified month (P_MONTH) on or after the specified date (P_AT_DATE).
+
+Examples:
+```
+-- Return the last day of the June after 2024-11-01.
+VALUES datetime.next_last_day_of_month('2024-11-01', 6);
+
+30-06-2025
 ```
 
 ### Function NEXT_1ST_DOW_N_OF_MONTH
@@ -252,81 +344,6 @@ VALUES datetime.next_last_dow_n_of_month('2024-11-16', 7, 11);
 VALUES datetime.next_last_dow_n_of_month('2024-11-16', 5, 11);
 
 29-11-2024
-```
-
-### Function NEXT_EVERY_N_DAYS
-
-This function returns the first date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_DAYS) from the specified base date (P_BASE_DATE). Parameter P_N_DAYS is a SMALLINT value between 1 and 366.
-
-Examples:
-```
--- Return the first date on or after 2024-11-16 that is a multiple of 7 days from 2024-11-01.
-VALUES datetime.next_every_n_days('2024-11-16', '2024-11-01', 7);
-
-22-11-2024
-
--- Return the first date on or after 2024-11-01 that is a multiple of 5 days from 2024-11-16.
-VALUES datetime.next_every_n_days('2024-11-01', '2024-11-16', 5);
-
-16-11-2024
-```
-
-### Function NEXT_EVERY_N_WEEKS
-
-This function returns the first date on or after the specified date (P_AT_DATE) with the specified days interval (P_N_WEEKS) from the specified base date (P_BASE_DATE). Parameter P_N_WEEKS is a SMALLINT value between 1 and 52.
-
-Examples:
-```
--- Return the first date on or after 2024-11-15 that is a multiple of 2 weeks from 2024-11-01.
-VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 2);
-
-15-11-2024
-
--- Return the first date on or after 2024-11-01 that is a multiple of 3 weeks from 2024-11-01.
-VALUES datetime.next_every_n_weeks('2024-11-15', '2024-11-01', 3);
-
-22-11-2024
-```
-
-### Function NEXT_EVERY_N_MONTHS
-
-This function returns the first date on or after the specified date (P_AT_DATE) with the specified months interval (P_N_MONTHS) from the specified base date (P_BASE_DATE). Parameter P_N_MONTHS is a SMALLINT value between 1 and 120.
-
-Examples:
-```
--- Return the first date on or after 2024-11-15 that is a multiple of 2 months from 2024-10-31.
-VALUES datetime.next_every_n_months('2024-11-15', '2024-10-31', 2);
-
-31-12-2024
-
--- Return the first date on or after 2024-11-15 that is a multiple of 4 months from 2024-10-31.
-VALUES datetime.next_every_n_months('2024-11-15', '2024-10-31', 4);
-
-28-02-2025
-```
-
-### Function NEXT_MONTH_END
-
-This function returns the next month end date on or after the specified date (P_AT_DATE).
-
-Examples:
-```
--- Return the last day of the June after 2024-11-05.
-VALUES datetime.next_month_end('2024-11-05');
-
-30-11-2024
-```
-
-### Function NEXT_LAST_DAY_OF_MONTH
-
-This function returns the date of the last day in the specified month (P_MONTH) on or after the specified date (P_AT_DATE).
-
-Examples:
-```
--- Return the last day of the June after 2024-11-01.
-VALUES datetime.next_last_day_of_month('2024-11-01', 6);
-
-30-06-2025
 ```
 
 ### Function NEXT_LEAP_DATE
