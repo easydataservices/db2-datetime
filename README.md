@@ -2,8 +2,6 @@
 
 Module DATETIME provides simple date and time utilities for Db2 for LUW databases.
 
-The current release contains only scheduling-related date functions.
-
 ## Function DAYS_BEFORE
 
 This function returns the date with the specified number of days (P_OFFSET_N) before the specified date (P_AT_DATE). Parameter P_MONTH is a SMALLINT value between 1 and 12. Parameter P_OFFSET_N is a SMALLINT value between 0 and 14.
@@ -361,4 +359,65 @@ VALUES datetime.next_leap_date('2024-01-01');
 VALUES datetime.next_leap_date('2096-03-01');
 
 29-02-2104
+```
+
+## Next time functions
+
+Module DATETIME provides the following functions for calculating future times:
+
+* NEXT_EVERY_N_MINUTES
+* NEXT_EVERY_N_HOURS
+
+Both functions return the next interval on or after a supplied time (P_AT_TIME) that falls within a specified time range (P_BASE_FROM_TIME to P_BASE_TO_TIME). If P_BASE_TO_TIME is less than P_BASE_FROM_TIME then the time range is considered to span midnight. If P_BASE_TO_TIME is NULL or equals P_BASE_FROM_TIME then the time range is considered to be 24 hours. The result calculated will always be zero or more intervals from P_BASE_FROM_TIME.
+
+### Function NEXT_EVERY_N_MINUTES
+
+This function calculates the result using an interval that is a specified number of minutes (P_N_MINUTES).
+
+Examples:
+```
+-- The specified interval must be between 1 and 180 minutes.
+VALUES datetime.next_every_n_minutes('00:00', '23:30', '01:30', 181);
+
+SQL0438N  Application raised error or warning with diagnostic text: 
+"P_N_MINUTES out of range".  SQLSTATE=TZ002
+
+-- Return the next 15 minute interval between 11.30pm and 1.30am, as at 12.05.38am.
+VALUES datetime.next_every_n_minutes('00:05:38', '23:30', '01:30', 15);
+
+00:15:00
+
+-- Return the next 5 minute interval between 1.30am and 11.30pm, as at 12.05.38am. Since the supplied time is outside the
+-- range, the range start time is returned.
+VALUES datetime.next_every_n_minutes('00:05:38', '01:30', '23:30', 5);
+
+01:30:00
+
+-- Return the next 13 minute interval calculate from 1 second after midnight, as at 11.40pm.
+VALUES datetime.next_every_n_minutes('23:40', '00:00:01', NULL, 13);
+
+23:50:01
+
+-- Return the next 13 minute interval calculate from 1 second after midnight, as at 11.51pm.
+VALUES datetime.next_every_n_minutes('23:51', '00:00:01', NULL, 13);
+
+00:00:01
+```
+
+### Function NEXT_EVERY_N_HOURS
+
+This function calculates the result using an interval that is a specified number of hours (P_N_HOURS).
+
+Examples:
+```
+-- The specified interval must be between 1 and 48 hours.
+VALUES datetime.next_every_n_hours('00:00', '23:30', '01:30', 49);
+
+SQL0438N  Application raised error or warning with diagnostic text: "P_N_HOURS 
+out of range".  SQLSTATE=TZ002
+
+-- Return the next 5 hour interval between 6am and midnight, as at 7.05am.
+VALUES datetime.next_every_n_hours('07:05', '06:00', '00:00', 5);
+
+11:00:00
 ```

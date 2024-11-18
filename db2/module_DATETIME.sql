@@ -75,3 +75,11 @@ PUBLISH FUNCTION next_leap_date(p_at_date DATE) RETURNS DATE;
 -- Return date with the specified number of days before the specified date.
 ALTER MODULE datetime
 PUBLISH FUNCTION days_before(p_at_date DATE, p_offset_n SMALLINT) RETURNS DATE;
+
+-- Return earliest time on or after the specified time with the minutes interval from the specified base time.
+ALTER MODULE datetime
+PUBLISH FUNCTION next_every_n_minutes(p_at_time TIME, p_base_from_time TIME, p_base_to_time TIME, p_n_minutes SMALLINT) RETURNS TIME;
+
+-- Return earliest time on or after the specified time with the hours interval from the specified base time.
+ALTER MODULE datetime
+PUBLISH FUNCTION next_every_n_hours(p_at_time TIME, p_base_from_time TIME, p_base_to_time TIME, p_n_hours SMALLINT) RETURNS TIME;
