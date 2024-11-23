@@ -83,3 +83,7 @@ PUBLISH FUNCTION next_every_n_minutes(p_at_time TIME, p_base_from_time TIME, p_b
 -- Return earliest time on or after the specified time with the hours interval from the specified base time.
 ALTER MODULE datetime
 PUBLISH FUNCTION next_every_n_hours(p_at_time TIME, p_base_from_time TIME, p_base_to_time TIME, p_n_hours SMALLINT) RETURNS TIME;
+
+-- Return boolean indicating whether a specified time (P_AT_TIME) is between a specified time range (P_START_TIME and P_END_TIME).
+ALTER MODULE datetime
+PUBLISH FUNCTION is_between_times(p_at_time TIME, p_start_time TIME, p_end_time TIME) RETURNS BOOLEAN;
