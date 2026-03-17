@@ -1,6 +1,6 @@
 # db2-datetime
 
-Module DATETIME provides simple date and time utilities for Db2 for LUW databases.a 
+Module DATETIME provides simple date and time utilities for Db2 for LUW databases.
 
 ## Installation
 
