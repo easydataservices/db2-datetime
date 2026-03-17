@@ -72,6 +72,10 @@ PUBLISH FUNCTION next_last_dow_n_of_month(p_at_date DATE, p_dow_n SMALLINT, p_mo
 ALTER MODULE datetime
 PUBLISH FUNCTION next_leap_date(p_at_date DATE) RETURNS DATE;
 
+-- Return first date on or after the specified date with a day of the week matching any specified day of week bits (see README).
+ALTER MODULE datetime
+PUBLISH FUNCTION next_dow_in_list(p_at_date DATE, p_dow_bits SMALLINT) RETURNS DATE;
+
 -- Return date with the specified number of days before the specified date.
 ALTER MODULE datetime
 PUBLISH FUNCTION days_before(p_at_date DATE, p_offset_n SMALLINT) RETURNS DATE;
