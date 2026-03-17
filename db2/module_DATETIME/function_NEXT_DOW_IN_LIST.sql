@@ -21,7 +21,7 @@ BEGIN
     RETURN NULL;
   END IF;
 
-  -- Iterate through future dates until a bits mask match is found.
+  -- Iterate through future dates until a bit mask match is found.
   SET v_count = 0;
   WHILE v_count < 7 AND v_result_date IS NULL DO
     SET v_dow = DAYOFWEEK_ISO(p_at_date + v_count DAYS);
